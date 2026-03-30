@@ -47,6 +47,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:home-lightning-bolt"
 
   - platform: modbus_controller
@@ -58,6 +60,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:home-lightning-bolt"
 
   - platform: modbus_controller
@@ -68,6 +72,8 @@ sensor:
     unit_of_measurement: "W"
     device_class: power
     accuracy_decimals: 0
+    filters:
+      - multiply: 10
     value_type: S_WORD
     icon: "mdi:home-lightning-bolt"
 
