@@ -30,6 +30,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:transmission-tower"
 
   - platform: modbus_controller
@@ -41,6 +43,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:transmission-tower"
 
   - platform: modbus_controller
@@ -52,6 +56,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:transmission-tower"
 
   - platform: modbus_controller
@@ -209,6 +215,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:transmission-tower"
 
   - platform: modbus_controller
@@ -220,6 +228,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:transmission-tower"
 
   - platform: modbus_controller
@@ -231,6 +241,8 @@ sensor:
     device_class: power
     accuracy_decimals: 0
     value_type: S_WORD
+    filters:
+      - multiply: 10
     icon: "mdi:transmission-tower"
 
   - platform: modbus_controller
