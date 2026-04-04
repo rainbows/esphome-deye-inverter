@@ -87,40 +87,36 @@ sensor:
     address: 195
     name: "Generator Raw Value"
     id: gen_raw_195
-    update_interval: 5s  # <--- ตรวจสอบว่ามีบรรทัดนี้ เพื่อให้มันอ่านค่าทุก 5 วินาที
-    on_value:
-      then:
-        # เมื่อได้ค่าใหม่มา ให้ส่งไปคำนวณและอัปเดต Sensor ลูกๆ ทันที
-        - component.update: gen_relay_code
-        - component.update: gen_switch_code
-        - component.update: gen_signal_code
 
-  # ดึง Bit 0-3 (Relay Status)
-  - platform: template
+  # 1. อ่านค่า Bit 0-3 (Relay Status)
+  - platform: modbus_controller
+    modbus_controller_id: deye_modbus_controller
     name: "Generator Relay Status Code"
     id: gen_relay_code
-    update_interval: never # ไม่ต้องรันเอง เดี๋ยวตัวแม่สั่งรัน
-    lambda: |-
-      if (std::isnan(id(gen_raw_195).state)) return {}; // ถ้าค่าแม่เป็นว่าง ให้คืนค่าว่าง
-      return (int(id(gen_raw_195).state) & 0x0F);
+    register_type: holding
+    address: 195
+    filters:
+      - lambda: return (int(x) & 0x0F);
 
-  # ดึง Bit 4-7 (Switch Signal)
-  - platform: template
+  # 2. อ่านค่า Bit 4-7 (Switch Signal)
+  - platform: modbus_controller
+    modbus_controller_id: deye_modbus_controller
     name: "Generator Switch Signal Code"
     id: gen_switch_code
-    update_interval: never
-    lambda: |-
-      if (std::isnan(id(gen_raw_195).state)) return {};
-      return ((int(id(gen_raw_195).state) >> 4) & 0x0F);
+    register_type: holding
+    address: 195
+    filters:
+      - lambda: return ((int(x) >> 4) & 0x0F);
 
-  # ดึง Bit 8-11 (Generator Signal)
-  - platform: template
+  # 3. อ่านค่า Bit 8-11 (Generator Signal)
+  - platform: modbus_controller
+    modbus_controller_id: deye_modbus_controller
     name: "Generator Signal Code"
     id: gen_signal_code
-    update_interval: never
-    lambda: |-
-      if (std::isnan(id(gen_raw_195).state)) return {};
-      return ((int(id(gen_raw_195).state) >> 8) & 0x0F);
+    register_type: holding
+    address: 195
+    filters:
+      - lambda: return ((int(x) >> 8) & 0x0F);
 
 text_sensor:
   - platform: template
