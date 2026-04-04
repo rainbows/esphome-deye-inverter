@@ -88,59 +88,35 @@ sensor:
     name: "Generator Raw Value"
     id: gen_raw_195
 
-  # 1. อ่านค่า Bit 0-3 (Relay Status)
+binary_sensor:
   - platform: modbus_controller
-    modbus_controller_id: deye_modbus_controller
-    name: "Generator Relay Status Code"
-    id: gen_relay_code
+    modbus_controller_id: ${modbus_controller_id}
+    name: "Generator Running"
+    id: generator_running
     register_type: holding
     address: 195
-    filters:
-      - lambda: |-
-          return (int(x) & 0x0F);
-
-  # 2. อ่านค่า Bit 4-7 (Switch Signal)
-  - platform: modbus_controller
-    modbus_controller_id: deye_modbus_controller
-    name: "Generator Switch Signal Code"
-    id: gen_switch_code
-    register_type: holding
-    address: 195
-    filters:
-      - lambda: |-
-          return ((int(x) >> 4) & 0x0F);
-
-  # 3. อ่านค่า Bit 8-11 (Generator Signal)
-  - platform: modbus_controller
-    modbus_controller_id: deye_modbus_controller
-    name: "Generator Signal Code"
-    id: gen_signal_code
-    register_type: holding
-    address: 195
-    filters:
-      - lambda: |-
-          return ((int(x) >> 8) & 0x0F);
-
-text_sensor:
-  - platform: template
-    name: "Generator Relay Description"
     lambda: |-
-      int status = int(id(gen_relay_code).state);
-      if (status == 0) return {"Not Attached"};
-      if (status == 1) return {"Actuation"};
-      if (status == 2) return {"Vacancy"};
-      if (status == 3) return {"Working/Suction"};
-      return {"Unknown"};
-    icon: "mdi:relay"
+      return (x & 0x0F) == 3;
 
-  - platform: template
-    name: "Generator Power Status"
+  - platform: modbus_controller
+    modbus_controller_id: ${modbus_controller_id}
+    name: "Generator Relay Active"
+    id: generator_relay_active
+    register_type: holding
+    address: 195
     lambda: |-
-      int pwr = int(id(gen_switch_code).state);
-      if (pwr == 0) return {"Power OFF"};
-      if (pwr == 1) return {"Power ON"};
-      return {"Unknown"};
-    icon: "mdi:power-cycle"
+      uint8_t status = x & 0x0F;
+      return (status == 1 || status == 3);
+
+  - platform: modbus_controller
+    modbus_controller_id: ${modbus_controller_id}
+    name: "Generator Power ON"
+    id: generator_power_on
+    register_type: holding
+    address: 195
+    lambda: |-
+      return (x & 0x10) != 0;
+
 
 select:
   - platform: modbus_controller
